@@ -36,7 +36,6 @@ module Network.OAuth.Signing (
   ) where
 
 import qualified Blaze.ByteString.Builder        as Blz
-import           Control.Applicative
 import           Crypto.Hash.SHA1                (hash)
 import           Crypto.MAC.HMAC                 (hmac)
 import           Crypto.Random

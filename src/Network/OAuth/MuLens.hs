@@ -21,9 +21,8 @@ module Network.OAuth.MuLens (
   (<&>), (&), (^.), (.~), (%~),
   ) where
 
-import           Control.Applicative
-import           Data.Functor.Identity
 import           Data.Functor.Constant
+import           Data.Functor.Identity
 
 view :: ((a -> Constant a a) -> s -> Constant a s) -> s -> a
 view inj = foldMapOf inj id

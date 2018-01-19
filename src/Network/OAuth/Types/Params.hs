@@ -19,7 +19,6 @@
 
 module Network.OAuth.Types.Params where
 
-import           Control.Applicative
 import           Crypto.Random
 import qualified Data.ByteString                 as S
 import qualified Data.ByteString.Base64          as S64
@@ -106,7 +105,7 @@ data Callback = OutOfBand | Callback Client.Request
   deriving ( Typeable )
 
 instance Show Callback where
-  show OutOfBand = "OutOfBand"
+  show OutOfBand      = "OutOfBand"
   show (Callback req) = "Callback <" ++ show (Client.getUri req) ++ ">"
 
 -- | Prints out in Epoch time format, a printed integer
