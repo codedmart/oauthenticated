@@ -183,6 +183,7 @@ bodyParams = digestBody . C.requestBody where
   digestBody (C.RequestBodyBuilder _ b) = H.parseQuery (Blz.toByteString b)
   digestBody (C.RequestBodyStream  _ _) = []
   digestBody (C.RequestBodyStreamChunked _) = []
+  digestBody (C.RequestBodyIO _) = []
 
   -- digestBody (Left (_, builder)) = H.parseQuery (Blz.toByteString builder)
   -- digestBody (Right _) = []

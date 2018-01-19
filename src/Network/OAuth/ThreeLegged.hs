@@ -30,7 +30,6 @@ module Network.OAuth.ThreeLegged (
   requestTokenProtocol, requestTokenProtocol'
   ) where
 
-import           Control.Applicative
 import           Control.Exception               as E
 import qualified Crypto.Random                   as R
 import qualified Data.ByteString.Lazy            as SL
@@ -149,7 +148,7 @@ requestPermanentTokenRaw cr srv verifier (ThreeLegged {..}) man gen = do
 -- See also 'requestPermanentTokenRaw'.
 --
 -- Throws 'C.HttpException's.
-requestPermanentToken 
+requestPermanentToken
   :: R.CPRG gen => O.Cred O.Temporary -> O.Server
                 -> P.Verifier
                 -> ThreeLegged -> C.Manager -> gen
@@ -165,15 +164,15 @@ requestPermanentToken cr srv verifier tl man gen = do
 
 -- | Like 'requestTokenProtocol' but allows for specification of the
 -- 'C.ManagerSettings'.
-requestTokenProtocol' 
-  :: C.ManagerSettings -> O.Cred O.Client -> O.Server -> ThreeLegged 
-     -> (URI -> IO P.Verifier) 
+requestTokenProtocol'
+  :: C.ManagerSettings -> O.Cred O.Client -> O.Server -> ThreeLegged
+     -> (URI -> IO P.Verifier)
      -> IO (Maybe (O.Cred O.Permanent))
 requestTokenProtocol' mset cr srv tl getVerifier = do
   entropy <- R.createEntropyPool
   E.bracket (C.newManager mset) C.closeManager $ \man -> do
     let gen = (R.cprgCreate entropy :: R.SystemRNG)
-    (respTempToken, gen') <- requestTemporaryToken cr srv tl man gen 
+    (respTempToken, gen') <- requestTemporaryToken cr srv tl man gen
     case C.responseBody respTempToken of
       Left _ -> return Nothing
       Right tok -> do
@@ -181,7 +180,7 @@ requestTokenProtocol' mset cr srv tl getVerifier = do
         verifier <- getVerifier $ buildAuthorizationUrl tempCr tl
         (respPermToken, _) <- requestPermanentToken tempCr srv verifier tl man gen'
         case C.responseBody respPermToken of
-          Left _ -> return Nothing
+          Left _     -> return Nothing
           Right tok' -> return (Just $ O.permanentCred tok' cr)
 
 -- | Performs an interactive token request provided credentials,
@@ -190,9 +189,9 @@ requestTokenProtocol' mset cr srv tl getVerifier = do
 -- will throw a 'C.TlsNotSupported' exception if TLS is required.
 --
 -- Throws 'C.HttpException's.
-requestTokenProtocol 
-  :: O.Cred O.Client -> O.Server -> ThreeLegged 
-     -> (URI -> IO P.Verifier) 
+requestTokenProtocol
+  :: O.Cred O.Client -> O.Server -> ThreeLegged
+     -> (URI -> IO P.Verifier)
      -> IO (Maybe (O.Cred O.Permanent))
 requestTokenProtocol = requestTokenProtocol' C.defaultManagerSettings
 
